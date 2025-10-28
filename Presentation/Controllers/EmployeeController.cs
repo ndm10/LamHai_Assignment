@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using BusinessLogicLayer.DTOs.Request;
 using BusinessLogicLayer.Services.Interfaces;
-using DataAccessLayer.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

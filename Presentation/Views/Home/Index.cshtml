@@ -4,5 +4,12 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <h3>Đây là trang web quản lý thông tin nhân sự vui lòng đăng ký tài khoản để tiếp tục sử dụng</h3>
+    @if (User?.Identity?.IsAuthenticated ?? false)
+    {
+        <h3>Chào mừng đến với ứng dụng quàn lý nhân sự</h3>
+    }
+    else
+    {
+        <h3>Đây là trang web quản lý thông tin nhân sự vui lòng đăng ký tài khoản để tiếp tục sử dụng</h3>
+    }
 </div>

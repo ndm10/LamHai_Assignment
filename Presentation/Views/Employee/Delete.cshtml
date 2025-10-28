@@ -1,7 +1,7 @@
 ﻿@model DataAccessLayer.Entities.Employee
 
 @{
-    ViewData["Title"] = "Delete Employee";
+    ViewData["Title"] = "Xóa nhân viên";
     string dobText = Model?.DateOfBirth != null ? Model.DateOfBirth.ToString("dd/MM/yyyy") : "-";
     var statusBadgeClass = (Model?.IsActive ?? false) ? "bg-success" : "bg-secondary";
     var statusText = (Model?.IsActive ?? false) ? "Hoạt động" : "Vô hiệu hóa";

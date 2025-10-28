@@ -29,9 +29,9 @@
 
     <form class="d-flex" method="get" asp-action="Index">
         <input class="form-control me-2" type="search" name="textSearch" placeholder="Code, name, email, phone, address" value="@textSearch" aria-label="Search" />
-        <button class="btn btn-outline-primary me-2" type="submit">Search</button>
+        <button class="btn btn-outline-primary me-2" type="submit">Tìm kiếm</button>
 
-        <a asp-action="Create" class="btn btn-primary">Create New</a>
+        <a asp-action="Create" class="btn btn-primary">Tạo mới</a>
     </form>
 </div>
 
@@ -56,7 +56,7 @@
                             <th>Điện thoại</th>
                             <th>Địa chỉ</th>
                             <th>Trạng thái</th>
-                            <th class="text-end">Actions</th>
+                            <th class="text-end">Hành động</th>
                         </tr>
                     </thead>
                     <tbody id="employeeTableBody">
@@ -75,9 +75,9 @@
                                     </span>
                                 </td>
                                 <td class="text-end">
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary me-1">Details</a>
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Edit</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary me-1">Chi tiết</a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Chỉnh sửa</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Xóa</a>
                                 </td>
                             </tr>
                         }
