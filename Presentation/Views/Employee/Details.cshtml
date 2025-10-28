@@ -1,0 +1,80 @@
+﻿@model DataAccessLayer.Entities.Employee
+@using System.Linq
+
+@{
+    ViewData["Title"] = "Chi tiết";
+    var initials = string.Join("", (Model?.FullName ?? "")
+                    .Split(' ', System.StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s[0].ToString().ToUpper())
+                    .Take(2));
+    string dobText = Model?.DateOfBirth.ToString("dd/MM/yyyy") ?? "-";
+    string isActiveBadge = (Model?.IsActive ?? false) ? "badge bg-success" : "badge bg-secondary";
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h1 class="h4 mb-0">Employee Details</h1>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary me-2">Edit</a>
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Back to List</a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-3 text-center border-end">
+                <div class="mb-3">
+                    <div class="rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center"
+                         style="width:120px;height:120px;font-size:36px;">
+                        @(!string.IsNullOrWhiteSpace(initials) ? initials : "NA")
+                    </div>
+                </div>
+
+                <h5 class="mb-0">@Model.FullName</h5>
+                <div class="text-muted small">@Model.EmployeeCode</div>
+                <div class="mt-2">
+                    <span class="@isActiveBadge">@((Model?.IsActive ?? false) ? "Đang hoạt động" : "Vô hiệu hóa")</span>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <dl class="row mb-0">
+                    <dt class="col-sm-3 text-muted">Full name</dt>
+                    <dd class="col-sm-9">@Model.FullName</dd>
+
+                    <dt class="col-sm-3 text-muted">Employee code</dt>
+                    <dd class="col-sm-9">@Model.EmployeeCode</dd>
+
+                    <dt class="col-sm-3 text-muted">Date of birth</dt>
+                    <dd class="col-sm-9">@dobText</dd>
+
+                    <dt class="col-sm-3 text-muted">Email</dt>
+                    <dd class="col-sm-9">
+                        @if (!string.IsNullOrWhiteSpace(Model?.Email))
+                        {
+                            <a href="mailto:@Model.Email">@Model.Email</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">—</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3 text-muted">Phone</dt>
+                    <dd class="col-sm-9">@(!string.IsNullOrWhiteSpace(Model?.Phone) ? Model.Phone : "-")</dd>
+
+                    <dt class="col-sm-3 text-muted">Address</dt>
+                    <dd class="col-sm-9">@(!string.IsNullOrWhiteSpace(Model?.Address) ? Model.Address : "-")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <small class="text-muted">Managed by: @Model.ManageById</small>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-primary">Edit</a>
+            <a asp-action="Index" class="btn btn-sm btn-outline-secondary ms-2">Back</a>
+        </div>
+    </div>
+</div>

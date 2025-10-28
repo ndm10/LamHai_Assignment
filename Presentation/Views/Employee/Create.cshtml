@@ -1,0 +1,94 @@
+﻿@using BusinessLogicLayer.DTOs.Request
+@model RequestCreateEmployeeDto
+
+<h2 class="mb-3">Create Employee</h2>
+
+@* validation summary for general errors *@
+<div>
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Create" method="post" id="createEmployeeForm" novalidate>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="EmployeeCode" class="form-label"></label>
+                    <input asp-for="EmployeeCode" class="form-control" />
+                    <span asp-validation-for="EmployeeCode" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="FullName" class="form-label"></label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="DateOfBirth" class="form-label"></label>
+                    <input asp-for="DateOfBirth" class="form-control" type="date" />
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Phone" class="form-label"></label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Address" class="form-label"></label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        (function () {
+            const form = document.getElementById('createEmployeeForm');
+            const dateInput = form.querySelector('input[name="DateOfBirth"]');
+            if (!dateInput) return;
+
+            // Set max attribute to today so the date picker disallows future dates
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.setAttribute('max', today);
+
+            // Client-side guard: prevent submit when date is in the future
+            form.addEventListener('submit', function (e) {
+                const value = dateInput.value;
+                if (!value) return; // required validation handled by unobtrusive validation / data annotations
+
+                if (value > today) {
+                    e.preventDefault();
+                    // Show the validation message in the existing validation span
+                    const msgSpan = form.querySelector('[data-valmsg-for="DateOfBirth"]');
+                    if (msgSpan) {
+                        msgSpan.textContent = 'Ngày sinh phải ở quá khứ.';
+                        msgSpan.classList.remove('field-validation-valid');
+                        msgSpan.classList.add('field-validation-error');
+                    }
+                    dateInput.classList.add('is-invalid');
+                    dateInput.focus();
+                }
+            });
+        })();
+    </script>
+}

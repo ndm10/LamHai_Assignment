@@ -1,0 +1,117 @@
+﻿@model IEnumerable<DataAccessLayer.Entities.Employee>
+@using System.Linq
+
+@{
+    // Pagination values - controller should set these in ViewBag
+    var pageIndex = ViewBag.PageIndex as int? ?? 1;
+    var pageSize = ViewBag.PageSize as int? ?? 10;
+    var totalCount = ViewBag.TotalCount as int? ?? Model?.Count() ?? 0;
+    var textSearch = ViewBag.TextSearch as string ?? string.Empty;
+
+    var totalPages = (int)System.Math.Ceiling(totalCount / (double)pageSize);
+    int firstPage = 1;
+    int lastPage = totalPages;
+    // show a small window of pages
+    var window = 5;
+    var startPage = System.Math.Max(firstPage, pageIndex - window / 2);
+    var endPage = System.Math.Min(lastPage, startPage + window - 1);
+    if (endPage - startPage + 1 < window)
+    {
+        startPage = System.Math.Max(firstPage, endPage - window + 1);
+    }
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="mb-0 d-flex align-items-center">
+        <span class="me-2">Employee List</span>
+        <span class="badge bg-secondary">@totalCount</span>
+    </h2>
+
+    <form class="d-flex" method="get" asp-action="Index">
+        <input class="form-control me-2" type="search" name="textSearch" placeholder="Code, name, email, phone, address" value="@textSearch" aria-label="Search" />
+        <button class="btn btn-outline-primary me-2" type="submit">Search</button>
+
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </form>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        @if (!Model?.Any() ?? true)
+        {
+            <div class="p-3">
+                <div class="alert alert-info mb-0">No employees found.</div>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mã nhân viên</th>
+                            <th>Tên</th>
+                            <th>Ngày sinh</th>
+                            <th>Email</th>
+                            <th>Điện thoại</th>
+                            <th>Địa chỉ</th>
+                            <th>Trạng thái</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><strong>@item.EmployeeCode</strong></td>
+                                <td>@item.FullName</td>
+                                <td>@(item.DateOfBirth.ToString("dd/MM/yyyy"))</td>
+                                <td><a href="mailto:@item.Email">@item.Email</a></td>
+                                <td>@item.Phone</td>
+                                <td>@item.Address</td>
+                                <td>
+                                    <span class="badge @(item.IsActive ? "bg-success" : "bg-secondary")">
+                                        @(item.IsActive ? "Hoạt động" : "Vô hiệu hóa")
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary me-1">Details</a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    @if (totalPages > 1)
+    {
+        <div class="card-footer d-flex justify-content-between align-items-center">
+            <div>
+                <small class="text-muted">Showing page @pageIndex of @totalPages — @totalCount total</small>
+            </div>
+
+            <nav aria-label="Employee list pages">
+                <ul class="pagination mb-0">
+                    <li class="page-item @(pageIndex == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-pageIndex="@(pageIndex - 1)" asp-route-pageSize="@pageSize" asp-route-textSearch="@textSearch">Previous</a>
+                    </li>
+
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == pageIndex ? "active" : "")" aria-current="@(i == pageIndex ? "page" : null)">
+                            <a class="page-link" asp-action="Index" asp-route-pageIndex="@i" asp-route-pageSize="@pageSize" asp-route-textSearch="@textSearch">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(pageIndex == totalPages ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-pageIndex="@(pageIndex + 1)" asp-route-pageSize="@pageSize" asp-route-textSearch="@textSearch">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
+</div>

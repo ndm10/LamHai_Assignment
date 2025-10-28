@@ -1,0 +1,122 @@
+﻿@using BusinessLogicLayer.DTOs.Request
+@model RequestUpdateEmployeeDto
+
+@{
+    ViewData["Title"] = "Chỉnh sửa nhân viên";
+    string dobValue = Model?.DateOfBirth != null ? ((DateTime)Model.DateOfBirth).ToString("yyyy-MM-dd") : string.Empty;
+}
+
+<h2 class="mb-3">Edit Employee</h2>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Edit" method="post" id="editEmployeeForm" novalidate>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="EmployeeCode" class="form-label"></label>
+                    <input asp-for="EmployeeCode" class="form-control" />
+                    <span asp-validation-for="EmployeeCode" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="FullName" class="form-label"></label>
+                    <input asp-for="FullName" class="form-control" />
+                    <span asp-validation-for="FullName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="DateOfBirth" class="form-label"></label>
+                    <input asp-for="DateOfBirth" class="form-control" type="date" value="@dobValue" />
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Phone" class="form-label"></label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6">
+                    <label asp-for="Address" class="form-label"></label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+
+                <div class="col-12">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" asp-for="IsActive" type="checkbox" id="isActiveSwitch" />
+                            <label class="form-check-label" for="isActiveSwitch">Trạng thái</label>
+                        </div>
+                        <div id="isActiveBadge">
+                            <span class="badge @(Model.IsActive ? "bg-success" : "bg-secondary")">
+                                @(Model.IsActive ? "Hoạt động" : "Vô hiệu hóa")
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Lưu</button>
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        (function () {
+            const form = document.getElementById('editEmployeeForm');
+            const dateInput = form.querySelector('input[name="DateOfBirth"]');
+            const today = new Date().toISOString().split('T')[0];
+
+            // Prevent picking future dates from the datepicker
+            if (dateInput) {
+                dateInput.setAttribute('max', today);
+            }
+
+            // Update badge text/color when IsActive toggles
+            const isActiveSwitch = document.getElementById('isActiveSwitch');
+            const isActiveBadge = document.getElementById('isActiveBadge');
+
+            function refreshBadge() {
+                const active = isActiveSwitch.checked;
+                isActiveBadge.innerHTML = `<span class="badge ${active ? 'bg-success' : 'bg-secondary'}">${active ? 'Hoạt động' : 'Vô hiệu hóa'}</span>`;
+            }
+
+            if (isActiveSwitch) {
+                isActiveSwitch.addEventListener('change', refreshBadge);
+                // initialize on load (in case server-side value differs)
+                refreshBadge();
+            }
+
+            // Optional client guard to stop form submit when date is in future (server-side validation still required)
+            form.addEventListener('submit', function (e) {
+                if (dateInput && dateInput.value && dateInput.value > today) {
+                    e.preventDefault();
+                    const msgSpan = form.querySelector('[data-valmsg-for="DateOfBirth"]');
+                    if (msgSpan) {
+                        msgSpan.textContent = 'Ngày sinh phải ở quá khứ.';
+                        msgSpan.classList.remove('field-validation-valid');
+                        msgSpan.classList.add('field-validation-error');
+                    }
+                    dateInput.classList.add('is-invalid');
+                    dateInput.focus();
+                }
+            });
+        })();
+    </script>
+}

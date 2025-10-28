@@ -1,0 +1,86 @@
+﻿@model DataAccessLayer.Entities.Employee
+
+@{
+    ViewData["Title"] = "Delete Employee";
+    string dobText = Model?.DateOfBirth != null ? Model.DateOfBirth.ToString("dd/MM/yyyy") : "-";
+    var statusBadgeClass = (Model?.IsActive ?? false) ? "bg-success" : "bg-secondary";
+    var statusText = (Model?.IsActive ?? false) ? "Hoạt động" : "Vô hiệu hóa";
+    var initials = string.Join("", (Model?.FullName ?? "")
+                    .Split(' ', System.StringSplitOptions.RemoveEmptyEntries)
+                    .Select(s => s[0].ToString().ToUpper())
+                    .Take(2));
+}
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h1 class="h4 mb-0">Xóa nhân viên</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary">Quay lại danh sách</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-3 text-center border-end">
+                <div class="mb-3">
+                    <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center"
+                         style="width:100px;height:100px;font-size:28px;">
+                        @(!string.IsNullOrWhiteSpace(initials) ? initials : "NA")
+                    </div>
+                </div>
+
+                <h5 class="mb-0">@Model?.FullName</h5>
+                <div class="text-muted small">@Model?.EmployeeCode</div>
+                <div class="mt-2">
+                    <span class="badge @statusBadgeClass">@statusText</span>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <h5 class="mb-2 text-danger">Bạn có chắc chắn muốn xóa bản ghi này?</h5>
+                <p class="text-muted small">Hành động này sẽ xóa vĩnh viễn nhân viên khỏi hệ thống.</p>
+
+                <dl class="row">
+                    <dt class="col-sm-3 text-muted">Mã nhân viên</dt>
+                    <dd class="col-sm-9">@Model?.EmployeeCode</dd>
+
+                    <dt class="col-sm-3 text-muted">Họ và tên</dt>
+                    <dd class="col-sm-9">@Model?.FullName</dd>
+
+                    <dt class="col-sm-3 text-muted">Ngày sinh</dt>
+                    <dd class="col-sm-9">@dobText</dd>
+
+                    <dt class="col-sm-3 text-muted">Email</dt>
+                    <dd class="col-sm-9">
+                        @if (!string.IsNullOrWhiteSpace(Model?.Email))
+                        {
+                            <a href="mailto:@Model.Email">@Model.Email</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">—</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3 text-muted">Điện thoại</dt>
+                    <dd class="col-sm-9">@(!string.IsNullOrWhiteSpace(Model?.Phone) ? Model.Phone : "-")</dd>
+
+                    <dt class="col-sm-3 text-muted">Địa chỉ</dt>
+                    <dd class="col-sm-9">@(!string.IsNullOrWhiteSpace(Model?.Address) ? Model.Address : "-")</dd>
+                </dl>
+
+                <form asp-action="Delete" method="post" class="mt-4" onsubmit="return confirmDelete();">
+                    <input type="hidden" asp-for="Id" />
+                    <button type="submit" class="btn btn-danger me-2">Xóa</button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">Hủy</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function confirmDelete() {
+            return confirm('Bạn chắc chắn muốn xóa nhân viên này? Hành động không thể hoàn tác.');
+        }
+    </script>
+}
